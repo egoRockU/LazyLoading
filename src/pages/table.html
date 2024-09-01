@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <table id="localRecordTable" class="table table-striped table-bordered table-hover dt-responsive"
+            style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="hidden">id</th>
+                    <th>
+                        <center>Company Code</center>
+                    </th>
+                    <th>
+                        <center>Employee ID</center>
+                    </th>
+                    <th>
+                        <center>Activity</center>
+                    </th>
+                    <th>
+                        <center>Image</center>
+                    </th>
+                    <th>
+                        <center>Date</center>
+                    </th>
+                    <th>
+                        <center>Time</center>
+                    </th>
+                    <th class="to-exclude">
+                        <center>Action</center>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+<script>
+    $('#localRecordTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: 'https://' + domain + '/employee/local_record?id=' + model.requestId,
+            type: 'GET',
+            contentType: 'application/json',
+            data: function (d) {
+                var order = d.order.length ? d.order[0] : null;
+                var columnIdx = order ? order.column : null;
+                var columnMap = [
+                    "id",
+                    "compCode",
+                    "empId",
+                    "activity",
+                    "date",
+                    "time",
+                ];
+                var columnName = columnIdx !== null ? columnMap[columnIdx] : 'id';
+                var sortDirection = order ? order.dir : 'desc';
+
+                if (!columnName) {
+                    columnName = 'id';
+                }
+
+                return $.extend({}, d, {
+                    sortColumn: columnName,
+                    sortDirection: sortDirection
+                });
+            }
+        },
+        columns: [
+            { data: "id", className: "center user-id hidden" },
+            { data: "compCode", className: "center data-compCode" },
+            { data: "empId", className: "center data-empId" },
+            { data: "activity", className: "center data-activity" },
+            {
+                className: "center .to-exclude",
+                render: function (data, type, row) {
+                    return row.image ? "<a href='#'><img class='logImage' src='" + row.image + "' /></a>" : "<p> </p>";
+                }
+            },
+            { data: "date", className: "center data-date" },
+            { data: "time", className: "center data-time" },
+            {
+                className: "center to-exclude",
+                render: function (data, type, row) {
+                    return '<button class="btn btn-primary review-ebutton" title="Review" ><i class="fa fa-search" aria-hidden="true"></i></button>' + '&nbsp' +
+                        '<button class="btn btn-primary delete-ebutton" title="Delete" ><i class="fa fa-trash" aria-hidden="true"></i></button> ';
+                }
+            }
+        ],
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
+        "language": {
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw custom-spinner"></i><span class="sr-only">Loading...</span>'
+        }
+    });
+</script>
+
+</html>
