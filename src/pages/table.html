@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
@@ -45,7 +47,7 @@
         processing: true,
         serverSide: true,
         ajax: {
-            url: 'https://' + domain + '/employee/local_record?id=' + model.requestId,
+            url: 'http://localhost:3000/getEmployees',
             type: 'GET',
             contentType: 'application/json',
             data: function (d) {
